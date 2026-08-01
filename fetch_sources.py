@@ -504,12 +504,64 @@ def get_sports(since, edition="daily"):
 # portfolio
 
 
-def get_portfolio(holdings, api_key):
+QUOTE_URL = ("https://query1.finance.yahoo.com/v8/finance/chart/"
+             "{ticker}?range=5d&interval=1d")
+
+
+def quote(ticker):
+    """Latest price and the prior session's close.
+
+    Yahoo's chart endpoint needs no API key. The last close in the series is
+    the current session (partial while the market is open, final after), so the
+    prior close is always the one before it.
+    """
+    data = json.loads(fetch(QUOTE_URL.format(ticker=ticker)))
+    result = data["chart"]["result"][0]
+    meta = result["meta"]
+    closes = [c for c in result["indicators"]["quote"][0]["close"] if c is not None]
+    price = meta.get("regularMarketPrice")
+    if price is None and closes:
+        price = closes[-1]
+    prior = closes[-2] if len(closes) >= 2 else None
+    if price is None:
+        raise ValueError(f"no price for {ticker}")
+    return float(price), (float(prior) if prior is not None else None)
+
+
+def get_portfolio(holdings, api_key=None):
     if not holdings:
         return {"status": "unavailable", "reason": "no holdings configured"}
-    if not api_key:
-        return {"status": "unavailable", "reason": "no market data API key set"}
-    return {"status": "unavailable", "reason": "price lookup not yet implemented"}
+
+    rows, failed = [], []
+    total = prior_total = 0.0
+    for h in holdings:
+        try:
+            price, prior = quote(h["ticker"])
+        except Exception as exc:  # noqa: BLE001 - one bad ticker must not sink the section
+            failed.append({"ticker": h["ticker"], "reason": short_reason(exc)})
+            continue
+        value = price * h["shares"]
+        total += value
+        row = {"ticker": h["ticker"], "shares": h["shares"],
+               "price": round(price, 2), "value": round(value, 2)}
+        if prior is not None:
+            row["prior_close"] = round(prior, 2)
+            row["change_pct"] = round((price - prior) / prior * 100, 2)
+            prior_total += prior * h["shares"]
+        rows.append(row)
+
+    if not rows:
+        return {"status": "unavailable", "reason": "no prices returned",
+                "failed": failed}
+
+    out = {"status": "ok", "holdings": rows, "total_value": round(total, 2)}
+    if prior_total:
+        out["prior_total_value"] = round(prior_total, 2)
+        out["change_value"] = round(total - prior_total, 2)
+        out["change_pct"] = round((total - prior_total) / prior_total * 100, 2)
+    if failed:
+        out["failed"] = failed
+    return out
 
 
 # --------------------------------------------------------------------------

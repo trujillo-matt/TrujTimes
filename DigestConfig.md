@@ -112,11 +112,23 @@ Scores and schedules come from ESPN's public API (no key required). Verified tea
 For a completed game, `.../summary?event=<id>` supplies scoring plays and leaders — use it for the 2 to 4 notable-moment bullets rather than inventing them. Team news (injuries, trades, roster moves, previews) comes from web search, same treatment as the News section.
 
 ## Portfolio Holdings
-Manual entry only. This drives price lookups, not brokerage access.
+Manual entry only. This drives price lookups, not brokerage access. Never log into a brokerage, and never store account numbers, statements, or personal details in this repo — share counts are all that belongs here.
+
+Share counts below were transcribed from Robinhood statements for the period ending **2026-06-30**, aggregated across four accounts (one Roth IRA, three individual). They are a point-in-time snapshot: any buy, sell, or dividend reinvestment after that date is not reflected until the table is updated.
 
 | Ticker | Shares |
 |---|---|
-| | |
+| QQQ | 0.065295 |
+| SCHD | 1.46427 |
+| VOO | 0.215445 |
+| VTI | 0.136973 |
+
+### Price source
+Prices come from Yahoo's chart endpoint, which needs no API key:
+
+`https://query1.finance.yahoo.com/v8/finance/chart/<TICKER>?range=5d&interval=1d`
+
+The last close in the returned series is the current session, so the prior session's close is the one before it — that pairing gives the day's change in both open and closed markets. This is an undocumented endpoint; if it starts failing, the section degrades to "unavailable" on its own, and swapping in a keyed provider (Alpha Vantage, Finnhub) means replacing `quote()` in `fetch_sources.py` and setting the key in the Routine's environment.
 
 ## Priority Content Rules
 Sources listed here get pulled into a Headline block on the day(s) specified, but only when they actually have new content that run. Source name must match the name used in the Newsletters section above (or News/Sports if you extend this to those later).
