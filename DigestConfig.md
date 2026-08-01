@@ -11,7 +11,7 @@ Trujillo Times
 Alpharetta, GA
 
 ## Calendars
-- Personal: [calendar ID or account]
+- Personal: [webcal://p116-caldav.icloud.com/published/2/MTYzNTk2Mzc4MjQxNjM1Oe4PE5zDQbLp8gFEGhdb5FH8YwWUxIoxrdhiOrS9gVof ]
 - Work: [calendar ID or account]
 
 ## Newsletters (Kill the Newsletter Atom feeds)
@@ -23,8 +23,10 @@ Alpharetta, GA
 - [topic or source]
 
 ## Sports Teams/Leagues
-- [team — league]
-- [team — league]
+- [F.C. Barcelona — LaLiga, Copa Del Rey, Champions League]
+- [Minnesota Vikings — NFL]
+- [Miami Hurricanes — NCAAF]
+- Soccer Transfer Rumors [ONLY During active transfer windows]
 
 ## Portfolio Holdings
 Manual entry only. This drives price lookups, not brokerage access.
