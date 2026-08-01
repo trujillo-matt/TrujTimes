@@ -68,3 +68,12 @@ Sources listed here get pulled into a Headline block on the day(s) specified, bu
 
 ## Feed Retention
 14 days
+
+## Publish Path
+The digest is written to `docs/0f3f5a3a42464db1dea0cd43/feed.xml`, served by GitHub Pages at:
+
+https://trujillo-matt.github.io/TrujTimes/0f3f5a3a42464db1dea0cd43/feed.xml
+
+The random path segment is deliberate. GitHub Pages serves publicly no matter the repo's visibility, and KOReader fetches plain URLs with no authentication, so an unguessable path is what keeps the digest from being casually discoverable. Same model as a Kill the Newsletter feed URL.
+
+Do not move this file to a predictable path, and do not link it from a README, an index page, or anywhere else public. If the path is ever exposed, generate a new random segment, move the file, and update the KOReader feed URL.
