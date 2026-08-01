@@ -2,7 +2,9 @@
 
 Edit this file to change what the digest pulls. Commit changes to the repo; the routine reads this file fresh on every run.
 
-Do not put API keys, passwords, or tokens in this file. Those belong in the Routine's secrets/environment settings, never in the repo.
+Do not put API keys, passwords, or tokens in this file. Those belong in the Routine's secrets/environment settings, never in the repo. Published calendar links count as tokens: the URL alone grants full read access.
+
+This repo should stay private. The generated digest in `docs/feed.xml` contains calendar events, to-dos, portfolio values, and health data.
 
 ## Masthead Title
 Trujillo Times
@@ -11,8 +13,12 @@ Trujillo Times
 Alpharetta, GA
 
 ## Calendars
-- Personal: [webcal://p116-caldav.icloud.com/published/2/MTYzNTk2Mzc4MjQxNjM1Oe4PE5zDQbLp8gFEGhdb5FH8YwWUxIoxrdhiOrS9gVof ]
-- Work: [calendar ID or account]
+Both calendars are published ICS links that need no authentication — the URL itself is the credential, so it lives in the Routine's secrets, not in this file. Set these two environment variables in the Routine settings:
+
+- Personal: `$PERSONAL_CALENDAR_ICS` — iCloud published calendar (webcal:// URL; fetch it as https://)
+- Work: `$WORK_CALENDAR_ICS` — Outlook/Office 365 published calendar (reachcalendar.ics URL)
+
+If either variable is unset, that calendar is skipped and noted as unavailable in the digest.
 
 ## Newsletters (Atom/RSS feeds)
 Kill the Newsletter feeds are email newsletters forwarded to an Atom feed. The rest are ordinary site RSS feeds. Both are fetched the same way.
