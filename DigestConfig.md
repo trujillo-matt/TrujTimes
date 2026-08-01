@@ -77,3 +77,12 @@ https://trujillo-matt.github.io/TrujTimes/0f3f5a3a42464db1dea0cd43/feed.xml
 The random path segment keeps the feed off predictable URLs like `/TrujTimes/feed.xml`, so it isn't found by guessing or by crawlers walking the github.io domain. It is not a secret: the repo is public, so the path is visible to anyone who opens the repo tree. Treat the published digest as public content.
 
 Keep the file at this path — moving it breaks the KOReader subscription, which fetches this URL directly with no authentication.
+
+### Feed requirements (KOReader will reject the feed otherwise)
+KOReader's NewsDownloader only accepts an Atom feed when `feed.title` exists and the first entry has **both** `<title>` and `<link>`. A missing entry `<link>` makes it reject the feed with the misleading message "Couldn't process RSS". So, every run:
+
+- Give each `<entry>` a `<link rel="alternate" type="text/html" href="..."/>` pointing at a real page.
+- Publish that page as `<YYYY-MM-DD>.html` next to `feed.xml`, holding the same digest HTML. This keeps the feed valid whether or not `download_full_article` is on.
+- Prune those dated `.html` pages on the same 14-day schedule as the entries, so they don't accumulate.
+
+A single-entry feed is fine; KOReader normalizes that case itself.
