@@ -61,7 +61,7 @@ Sources listed here get pulled into a Headline block on the day(s) specified, bu
 
 | Source | Day(s) | Note |
 |---|---|---|
-| Chris Williamson newsletter | Monday | Always read in full when it drops |
+| Modern Wisdom | Monday | Chris Williamson's newsletter. Always read in full when it drops |
 
 ## Reminders List
 [list name, or leave blank for the default list]
