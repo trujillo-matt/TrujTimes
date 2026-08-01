@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Trujillo Times Morning Digest</title>
+  <id>tag:trujillo-matt.github.io,2026:trujtimes-morning-digest</id>
+  <link href="https://trujillo-matt.github.io/TrujTimes/feed.xml" rel="self"/>
+  <updated>2026-08-01T16:27:00Z</updated>
+  <author><name>Trujillo Times Digest</name></author>
+  <entry>
+    <title>Morning Digest, August 1, 2026</title>
+    <id>tag:trujillo-matt.github.io,2026-08-01:trujtimes/digest/2026-08-01</id>
+    <updated>2026-08-01T16:27:00Z</updated>
+    <published>2026-08-01T16:27:00Z</published>
+    <content type="html">&lt;h1&gt;Trujillo Times&lt;/h1&gt;
+&lt;p&gt;Saturday, August 1, 2026 &amp;#8212; Showers and thunderstorms, high 85&amp;#176;F, low 72&amp;#176;F&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;At a Glance&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Weather: Showers and thunderstorms today, high 85&amp;#176;F, 89% chance of rain; low 72&amp;#176;F tonight. No active alerts.&lt;/li&gt;
+&lt;li&gt;Calendar: No events on the Personal calendar today.&lt;/li&gt;
+&lt;li&gt;To-dos: Unavailable this morning.&lt;/li&gt;
+&lt;li&gt;Portfolio: No holdings configured yet.&lt;/li&gt;
+&lt;li&gt;WHOOP: Recovery data didn&#x27;t come through.&lt;/li&gt;
+&lt;li&gt;Newsletters, news, and sports are not set up yet &amp;#8212; see the setup note below.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;Setup Note&lt;/h2&gt;
+&lt;p&gt;This is the first edition. DigestConfig.md is in place, but several sections are still placeholder entries: calendars, newsletter feeds, news topics, sports teams, portfolio holdings, and the reminders list. The iCloud, market data, and WHOOP credentials also aren&#x27;t set yet. Fill those in and the matching sections will start appearing here each morning.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;Calendar&lt;/h2&gt;
+&lt;p&gt;No events scheduled today on the Personal calendar. Calendar IDs haven&#x27;t been filled in yet in DigestConfig.md, so only the primary personal calendar was checked.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;To-dos&lt;/h2&gt;
+&lt;p&gt;To-dos unavailable this morning.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;Newsletters&lt;/h2&gt;
+&lt;p&gt;No newsletter feeds are configured yet.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;News&lt;/h2&gt;
+&lt;p&gt;No news topics are configured yet.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;Sports&lt;/h2&gt;
+&lt;p&gt;No teams are configured yet.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;Portfolio&lt;/h2&gt;
+&lt;p&gt;No holdings are configured yet.&lt;/p&gt;
+&lt;hr&gt;
+</content>
+  </entry>
+</feed>
