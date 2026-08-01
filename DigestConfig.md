@@ -4,12 +4,38 @@ Edit this file to change what the digest pulls. Commit changes to the repo; the 
 
 Do not put API keys, passwords, or tokens in this file. Those belong in the Routine's secrets/environment settings, never in the repo.
 
-This repo is public, so GitHub Pages can serve the feed on a Free plan. Treat everything here and everything the digest publishes as world-readable: the generated feed contains calendar events, to-dos, portfolio values, and health data, and anyone with the URL can read it.
+This repo is public, so GitHub Pages can serve the feed on a Free plan. Treat everything here and everything the digest publishes as world-readable: the generated feed contains calendar events and portfolio values, and anyone with the URL can read it.
 
 The published calendar links below are an explicit, informed exception, kept here by the owner's decision. They are unauthenticated bearer URLs: anyone holding one can read that calendar's past and future events indefinitely. Removing a line from this file does not undo that — the link has to be revoked and re-shared from iCloud or Outlook.
 
 ## Masthead Title
 Trujillo Times
+
+## Editions
+Two formats share one pipeline. `fetch_sources.py` picks the edition by weekday, so a scheduled run needs no argument; pass `--edition` only to force one.
+
+| | Daily (Mon–Fri) | Weekend (Sat) |
+|---|---|---|
+| Entry title | `Morning Digest, <date>` | `Weekend Digest, <date>` |
+| Window | since the last run | the past 7 days |
+| News | 3–5 stories, 1–2 sentences each | 5–7 stories, 4–6 sentences each |
+| Calendar | today, plus one "coming up" | today, plus the full week ahead |
+| Sports | games since the last run | the week's results, plus the week ahead |
+| Newsletters | new since the last run | new since the last run, plus a one-line index of issues already covered this week |
+
+Sunday has no edition.
+
+Section order, both editions:
+
+1. Headline block — only when a Priority Content Rule matches
+2. At a glance — 5 to 7 one-line bullets: weather, calendar count, portfolio change, a top news line, a sports line
+3. Calendar
+4. Newsletters
+5. News
+6. Sports
+7. Portfolio
+
+The weekend edition is longer in depth, not looser in sourcing. Every story is still summarized in your own words with a named source; never pad length by quoting.
 
 ## Weather Location
 Alpharetta, GA
@@ -62,7 +88,9 @@ Site feeds:
 - Golf equipment
 - Pokémon investing (TCG card market)
 
-Pull **3 to 5 stories total per edition**, not per topic — chosen by what actually matters that day. Topics rotate in and out; a quiet topic simply doesn't appear. Use popular, well-known outlets and name the source on every story.
+Story counts are per edition, not per topic — see the Editions table. Daily runs 3 to 5 stories at 1 to 2 sentences; the Saturday wrap runs 5 to 7 at 4 to 6 sentences, covering the week's developments rather than the last day's. Topics rotate in and out; a quiet topic simply doesn't appear. Use popular, well-known outlets and name the source on every story.
+
+The longer weekend treatment means more context and why-it-matters, still in your own words. It is not licence to quote at length.
 
 ## Sports Teams/Leagues
 - F.C. Barcelona — LaLiga, Copa del Rey, Champions League
@@ -97,9 +125,6 @@ Sources listed here get pulled into a Headline block on the day(s) specified, bu
 |---|---|---|
 | Modern Wisdom | Monday | Chris Williamson's newsletter. Always read in full when it drops |
 
-## Reminders List
-[list name, or leave blank for the default list]
-
 ## Feed Retention
 14 days
 
@@ -114,6 +139,8 @@ Keep the file at this path — moving it breaks the KOReader subscription, which
 
 ### Building the feeds
 Do not hand-write the feeds. Each run, write the digest to `<YYYY-MM-DD>.html` in the feed directory (including a `<meta name="published" content="...Z">` tag), then run `python3 build_feeds.py` from the repo root. It regenerates both feeds from the dated pages and prunes anything past the retention window, pages included.
+
+Each entry's title comes from the page's `<title>` tag, so a Weekend Digest needs no build change — just title the page `Weekend Digest, <date>`.
 
 Two feeds are published from the same content:
 - `rss.xml` — RSS 2.0, **the one KOReader subscribes to**. Body in a CDATA `<description>`.

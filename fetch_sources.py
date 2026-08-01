@@ -6,7 +6,13 @@ Every source is wrapped: a failure, timeout, or auth error becomes
 raises past main(), so one dead source can never halt a run. Summarizing and
 story selection happen outside this script; it only gathers facts.
 
-Usage:  python3 fetch_sources.py [--config DigestConfig.md] [--state last_run.json]
+Two editions share this pipeline. The daily edition (Mon-Fri) collects since
+the last run; the weekend edition (Sat) looks back a full week and forward a
+full week, for a wrap rather than another daily. Edition defaults by weekday,
+so a scheduled run needs no argument.
+
+Usage:  python3 fetch_sources.py [--edition daily|weekend]
+                                 [--config DigestConfig.md] [--state last_run.json]
 """
 
 import argparse
@@ -24,6 +30,7 @@ TZ = ZoneInfo("America/New_York")
 UA = "TrujTimes-digest/1.0 (matt.truj7@gmail.com)"
 TIMEOUT = 25
 LOOKAHEAD_DAYS = 7
+WEEK_DAYS = 7
 
 NWS_GRID = "https://api.weather.gov/gridpoints/FFC/53,101/forecast"
 NWS_ALERTS = "https://api.weather.gov/alerts/active?point=34.0754,-84.2941"
@@ -137,6 +144,11 @@ def window_start(state):
         except ValueError:
             pass
     return datetime.now(timezone.utc) - timedelta(days=1)
+
+
+def default_edition():
+    """Saturday runs the weekend wrap; every other day is a daily."""
+    return "weekend" if datetime.now(TZ).weekday() == 5 else "daily"
 
 
 # --------------------------------------------------------------------------
@@ -296,7 +308,7 @@ def rank_upcoming(ev):
     return (external, physical, one_off, ev["start"].isoformat())
 
 
-def get_calendars(urls):
+def get_calendars(urls, edition="daily"):
     today = datetime.now(TZ).date()
     horizon_end = datetime.combine(today + timedelta(days=LOOKAHEAD_DAYS),
                                    datetime.max.time(), TZ)
@@ -330,15 +342,25 @@ def get_calendars(urls):
         seen.add(key)
         deduped.append(fmt_event(ev, label))
 
-    best = None
+    # Daily surfaces one look-ahead event; the weekend wrap lists the whole week.
+    best, week_ahead = None, []
     if upcoming:
         ev, label = min(upcoming, key=lambda p: rank_upcoming(p[0]))
         best = fmt_event(ev, label, with_date=True)
+    if edition == "weekend":
+        seen_up = set()
+        for ev, label in sorted(upcoming, key=lambda p: p[0]["start"].isoformat()):
+            key = (ev["summary"], ev["start"].isoformat())
+            if key in seen_up:
+                continue
+            seen_up.add(key)
+            week_ahead.append(fmt_event(ev, label, with_date=True))
 
     ok = [k for k, v in per_cal.items() if v.get("status") == "ok"]
     return {"status": "ok" if ok else "unavailable",
             "reason": None if ok else "both calendars failed",
-            "calendars": per_cal, "today": deduped, "coming_up": best}
+            "calendars": per_cal, "today": deduped, "coming_up": best,
+            "week_ahead": week_ahead}
 
 
 # --------------------------------------------------------------------------
@@ -361,9 +383,17 @@ def entry_time(node, ns):
     return None
 
 
-def get_newsletters(feeds, since):
+def get_newsletters(feeds, since, edition="daily", fresh_since=None):
+    """Split feed entries into unsummarized and already-covered.
+
+    `fresh_since` is the last-run cutoff: anything after it has not appeared in
+    a digest yet and needs summarizing. On the weekend it differs from `since`
+    (the week boundary), so issues the weekday editions already covered land in
+    earlier_this_week and are only indexed by title.
+    """
     A = "{http://www.w3.org/2005/Atom}"
-    results, failures = [], []
+    fresh_since = fresh_since or since
+    results, earlier, failures = [], [], []
     for name, url in feeds:
         try:
             root = ET.fromstring(fetch(url))
@@ -373,23 +403,33 @@ def get_newsletters(feeds, since):
 
         nodes = root.findall(f".//{A}entry") or root.findall(".//item")
         ns = A if root.findall(f".//{A}entry") else ""
-        fresh = []
+        fresh, prior = [], []
         for n in nodes:
             ts = entry_time(n, ns)
-            if ts is None or ts <= since:
+            if ts is None:
                 continue
             link = n.findtext("link") or ""
             if not link:
                 el = n.find(f"{ns}link")
                 link = el.get("href", "") if el is not None else ""
-            fresh.append({"title": (n.findtext(f"{ns}title") or "").strip(),
-                          "published": ts.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-                          "link": link})
+            item = {"title": (n.findtext(f"{ns}title") or "").strip(),
+                    "published": ts.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                    "link": link}
+            if ts > fresh_since:
+                fresh.append(item)
+            elif edition == "weekend" and ts > since:
+                # Already summarized in a weekday edition - the wrap only indexes these.
+                prior.append(item)
         if fresh:
             results.append({"name": name, "entries": fresh[:5]})
+        if prior:
+            earlier.append({"name": name, "entries": prior[:5]})
 
-    return {"status": "ok", "since": since.strftime("%Y-%m-%dT%H:%M:%SZ"),
-            "with_new_content": results, "failed_feeds": failures}
+    out = {"status": "ok", "since": since.strftime("%Y-%m-%dT%H:%M:%SZ"),
+           "with_new_content": results, "failed_feeds": failures}
+    if edition == "weekend":
+        out["earlier_this_week"] = earlier
+    return out
 
 
 # --------------------------------------------------------------------------
@@ -411,11 +451,13 @@ def game_record(event, team_name):
             "state": status.get("state"), "scores": scores}
 
 
-def get_sports(since):
+def get_sports(since, edition="daily"):
     season = datetime.now(TZ).year
+    now = datetime.now(timezone.utc)
+    horizon = now + timedelta(days=WEEK_DAYS) if edition == "weekend" else now
     out, failures = [], []
     for team in TEAMS:
-        games, any_ok = [], False
+        games, upcoming, any_ok = [], [], False
         for league in team["leagues"]:
             url = f'{ESPN}/{team["sport"]}/{league}/teams/{team["id"]}/schedule'
             if team["seasoned"]:
@@ -434,18 +476,25 @@ def get_sports(since):
                         if len(raw) == 16 else datetime.strptime(raw, "%Y-%m-%dT%H:%M:%S").replace(tzinfo=timezone.utc)
                 except ValueError:
                     continue
-                if since <= when <= datetime.now(timezone.utc):
+                if since <= when <= now:
                     rec = game_record(ev, team["name"])
                     rec["league"] = league
                     if rec["completed"]:
                         rec["summary_endpoint"] = (
                             f'{ESPN}/{team["sport"]}/{league}/summary?event={rec["event_id"]}')
                     games.append(rec)
+                elif now < when <= horizon:
+                    rec = game_record(ev, team["name"])
+                    rec["league"] = league
+                    upcoming.append(rec)
 
-        out.append({"team": team["name"],
-                    "status": "ok" if any_ok else "unavailable",
-                    "games": games,
-                    "note": None if games else "no game in window"})
+        entry = {"team": team["name"],
+                 "status": "ok" if any_ok else "unavailable",
+                 "games": sorted(games, key=lambda g: g["date"] or ""),
+                 "note": None if games else "no game in window"}
+        if edition == "weekend":
+            entry["upcoming"] = sorted(upcoming, key=lambda g: g["date"] or "")
+        out.append(entry)
 
     return {"status": "ok", "since": since.strftime("%Y-%m-%dT%H:%M:%SZ"),
             "teams": out, "failures": failures}
@@ -468,9 +517,13 @@ def get_portfolio(holdings, api_key):
 
 def main():
     ap = argparse.ArgumentParser()
+    ap.add_argument("--edition", choices=("daily", "weekend"), default=None,
+                    help="defaults to weekend on Saturday, daily otherwise")
     ap.add_argument("--config", default="DigestConfig.md")
     ap.add_argument("--state", default="last_run.json")
     args = ap.parse_args()
+
+    edition = args.edition or default_edition()
 
     try:
         cfg = parse_config(args.config)
@@ -478,20 +531,22 @@ def main():
         json.dump({"error": f"could not read {args.config}: {short_reason(exc)}"}, sys.stdout)
         return 1
 
-    since = window_start(load_state(args.state))
     now = datetime.now(timezone.utc)
+    last_run = window_start(load_state(args.state))
+    # The weekend wrap looks back a full week regardless of when the last run was,
+    # but newsletters still key off last_run so covered issues aren't re-summarized.
+    since = now - timedelta(days=WEEK_DAYS) if edition == "weekend" else last_run
 
     out = {
+        "edition": edition,
         "generated_at": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
         "local_date": datetime.now(TZ).strftime("%A, %B %-d, %Y"),
         "window_start": since.strftime("%Y-%m-%dT%H:%M:%SZ"),
         "weather": guard(get_weather),
-        "calendar": guard(get_calendars, cfg["calendars"]),
-        "newsletters": guard(get_newsletters, cfg["feeds"], since),
-        "sports": guard(get_sports, since),
+        "calendar": guard(get_calendars, cfg["calendars"], edition),
+        "newsletters": guard(get_newsletters, cfg["feeds"], since, edition, last_run),
+        "sports": guard(get_sports, since, edition),
         "portfolio": guard(get_portfolio, cfg["holdings"], None),
-        "todos": {"status": "unavailable", "reason": "no iCloud app-specific password set"},
-        "whoop": {"status": "unavailable", "reason": "no WHOOP bridge configured"},
     }
     json.dump(out, sys.stdout, indent=2)
     print()
