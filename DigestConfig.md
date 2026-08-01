@@ -4,7 +4,7 @@ Edit this file to change what the digest pulls. Commit changes to the repo; the 
 
 Do not put API keys, passwords, or tokens in this file. Those belong in the Routine's secrets/environment settings, never in the repo. Published calendar links count as tokens: the URL alone grants full read access.
 
-This repo should stay private. The generated digest in `docs/feed.xml` contains calendar events, to-dos, portfolio values, and health data.
+This repo is public, so GitHub Pages can serve the feed on a Free plan. Treat everything here and everything the digest publishes as world-readable: the generated feed contains calendar events, to-dos, portfolio values, and health data, and anyone with the URL can read it. Secrets belong in the Routine's environment, never in a tracked file.
 
 ## Masthead Title
 Trujillo Times
@@ -74,6 +74,6 @@ The digest is written to `docs/0f3f5a3a42464db1dea0cd43/feed.xml`, served by Git
 
 https://trujillo-matt.github.io/TrujTimes/0f3f5a3a42464db1dea0cd43/feed.xml
 
-The random path segment is deliberate. GitHub Pages serves publicly no matter the repo's visibility, and KOReader fetches plain URLs with no authentication, so an unguessable path is what keeps the digest from being casually discoverable. Same model as a Kill the Newsletter feed URL.
+The random path segment keeps the feed off predictable URLs like `/TrujTimes/feed.xml`, so it isn't found by guessing or by crawlers walking the github.io domain. It is not a secret: the repo is public, so the path is visible to anyone who opens the repo tree. Treat the published digest as public content.
 
-Do not move this file to a predictable path, and do not link it from a README, an index page, or anywhere else public. If the path is ever exposed, generate a new random segment, move the file, and update the KOReader feed URL.
+Keep the file at this path — moving it breaks the KOReader subscription, which fetches this URL directly with no authentication.
