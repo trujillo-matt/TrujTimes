@@ -2,9 +2,11 @@
 
 Edit this file to change what the digest pulls. Commit changes to the repo; the routine reads this file fresh on every run.
 
-Do not put API keys, passwords, or tokens in this file. Those belong in the Routine's secrets/environment settings, never in the repo. Published calendar links count as tokens: the URL alone grants full read access.
+Do not put API keys, passwords, or tokens in this file. Those belong in the Routine's secrets/environment settings, never in the repo.
 
-This repo is public, so GitHub Pages can serve the feed on a Free plan. Treat everything here and everything the digest publishes as world-readable: the generated feed contains calendar events, to-dos, portfolio values, and health data, and anyone with the URL can read it. Secrets belong in the Routine's environment, never in a tracked file.
+This repo is public, so GitHub Pages can serve the feed on a Free plan. Treat everything here and everything the digest publishes as world-readable: the generated feed contains calendar events, to-dos, portfolio values, and health data, and anyone with the URL can read it.
+
+The published calendar links below are an explicit, informed exception, kept here by the owner's decision. They are unauthenticated bearer URLs: anyone holding one can read that calendar's past and future events indefinitely. Removing a line from this file does not undo that — the link has to be revoked and re-shared from iCloud or Outlook.
 
 ## Masthead Title
 Trujillo Times
@@ -13,12 +15,24 @@ Trujillo Times
 Alpharetta, GA
 
 ## Calendars
-Both calendars are published ICS links that need no authentication — the URL itself is the credential, so it lives in the Routine's secrets, not in this file. Set these two environment variables in the Routine settings:
+Published ICS feeds, fetched over https. Both are read-only snapshots, so events created in the minutes before a run may not appear yet.
 
-- Personal: `$PERSONAL_CALENDAR_ICS` — iCloud published calendar (webcal:// URL; fetch it as https://)
-- Work: `$WORK_CALENDAR_ICS` — Outlook/Office 365 published calendar (reachcalendar.ics URL)
+- Personal: https://p116-caldav.icloud.com/published/2/MTYzNTk2Mzc4MjQxNjM1Oe4PE5zDQbLp8gFEGhdb5FH8YwWUxIoxrdhiOrS9gVof
+- Work: https://outlook.office365.com/owa/calendar/23dacf03324848a990c6b89e3bfd2b69@bbqguys.com/12532d5dfe23429cac700c6ccc83f9f713501278175081702419/S-1-8-1871844191-576938068-2983623427-2084340620/reachcalendar.ics
 
-If either variable is unset, that calendar is skipped and noted as unavailable in the digest.
+If one calendar fails, note which one and continue with the other.
+
+### Empty-day rule
+The Calendar section always appears, so the digest's shape never changes day to day. With no events today:
+
+```
+Nothing scheduled today.
+Coming up: Wed Aug 5, 1:00 PM — Social Media Grilling (Microsoft Teams Meeting)
+```
+
+The "coming up" line surfaces one event from the next 7 days, ranked by: (1) external attendee or a third party named in the title, (2) a physical location rather than a video link, (3) non-recurring. Ties go to whichever is soonest. If the window is empty, drop the line rather than reaching further out.
+
+An empty day and a failed fetch must never read alike. Zero events is "Nothing scheduled today"; a broken feed is "Work calendar unavailable this morning."
 
 ## Newsletters (Atom/RSS feeds)
 Kill the Newsletter feeds are email newsletters forwarded to an Atom feed. The rest are ordinary site RSS feeds. Both are fetched the same way.
@@ -40,14 +54,34 @@ Site feeds:
 - Uncrate: https://feeds.feedburner.com/uncrate
 
 ## News Topics/Sources
-- [topic or source]
-- [topic or source]
+- Stock market
+- Geopolitics
+- Technology
+- AI
+- Tech business, startups, and VC (funding rounds, earnings, founder and exec moves, IPOs)
+- Golf equipment
+- Pokémon investing (TCG card market)
+
+Pull **3 to 5 stories total per edition**, not per topic — chosen by what actually matters that day. Topics rotate in and out; a quiet topic simply doesn't appear. Use popular, well-known outlets and name the source on every story.
 
 ## Sports Teams/Leagues
-- [F.C. Barcelona — LaLiga, Copa Del Rey, Champions League]
-- [Minnesota Vikings — NFL]
-- [Miami Hurricanes — NCAAF]
-- Soccer Transfer Rumors [ONLY During active transfer windows]
+- F.C. Barcelona — LaLiga, Copa del Rey, Champions League
+- Minnesota Vikings — NFL
+- Miami Hurricanes — NCAAF
+- Soccer transfer rumors — only during active transfer windows
+
+### Sports data sources
+Scores and schedules come from ESPN's public API (no key required). Verified team IDs:
+
+| Team | Endpoint |
+|---|---|
+| Barcelona (LaLiga) | `site.api.espn.com/apis/site/v2/sports/soccer/esp.1/teams/83/schedule?season=<YYYY>` |
+| Barcelona (Copa del Rey) | same, league `esp.copa_del_rey` |
+| Barcelona (Champions League) | same, league `uefa.champions` |
+| Minnesota Vikings | `.../sports/football/nfl/teams/min/schedule` |
+| Miami Hurricanes | `.../sports/football/college-football/teams/2390/schedule?season=<YYYY>` |
+
+For a completed game, `.../summary?event=<id>` supplies scoring plays and leaders — use it for the 2 to 4 notable-moment bullets rather than inventing them. Team news (injuries, trades, roster moves, previews) comes from web search, same treatment as the News section.
 
 ## Portfolio Holdings
 Manual entry only. This drives price lookups, not brokerage access.

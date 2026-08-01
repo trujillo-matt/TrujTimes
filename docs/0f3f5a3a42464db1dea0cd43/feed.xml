@@ -4,47 +4,79 @@
   <id>tag:trujillo-matt.github.io,2026:trujtimes-morning-digest</id>
   <link rel="self" type="application/atom+xml" href="https://trujillo-matt.github.io/TrujTimes/0f3f5a3a42464db1dea0cd43/feed.xml"/>
   <link rel="alternate" type="text/html" href="https://trujillo-matt.github.io/TrujTimes/0f3f5a3a42464db1dea0cd43/"/>
-  <updated>2026-08-01T16:27:00Z</updated>
+  <updated>2026-08-01T17:45:50Z</updated>
   <author><name>Trujillo Times Digest</name></author>
   <entry>
     <title>Morning Digest, August 1, 2026</title>
     <id>tag:trujillo-matt.github.io,2026-08-01:trujtimes/digest/2026-08-01</id>
     <link rel="alternate" type="text/html" href="https://trujillo-matt.github.io/TrujTimes/0f3f5a3a42464db1dea0cd43/2026-08-01.html"/>
-    <updated>2026-08-01T16:27:00Z</updated>
-    <published>2026-08-01T16:27:00Z</published>
+    <updated>2026-08-01T17:45:50Z</updated>
+    <published>2026-08-01T17:45:50Z</published>
     <content type="html">&lt;h1&gt;Trujillo Times&lt;/h1&gt;
 &lt;p&gt;Saturday, August 1, 2026 &amp;#8212; Showers and thunderstorms, high 85&amp;#176;F, low 72&amp;#176;F&lt;/p&gt;
 &lt;hr&gt;
+
 &lt;h2&gt;At a Glance&lt;/h2&gt;
 &lt;ul&gt;
-&lt;li&gt;Weather: Showers and thunderstorms today, high 85&amp;#176;F, 89% chance of rain; low 72&amp;#176;F tonight. No active alerts.&lt;/li&gt;
-&lt;li&gt;Calendar: No events on the Personal calendar today.&lt;/li&gt;
-&lt;li&gt;To-dos: Unavailable this morning.&lt;/li&gt;
-&lt;li&gt;Portfolio: No holdings configured yet.&lt;/li&gt;
-&lt;li&gt;WHOOP: Recovery data didn&#x27;t come through.&lt;/li&gt;
-&lt;li&gt;Newsletters, news, and sports are not set up yet &amp;#8212; see the setup note below.&lt;/li&gt;
+&lt;li&gt;Showers and thunderstorms through the afternoon, high 85&amp;#176;F, 50% chance of rain. No active alerts.&lt;/li&gt;
+&lt;li&gt;Nothing scheduled today on either calendar.&lt;/li&gt;
+&lt;li&gt;Markets closed sharply higher Friday &amp;#8212; Dow +1.2%, S&amp;amp;P 500 +1.7%.&lt;/li&gt;
+&lt;li&gt;No games for Barcelona, the Vikings, or Miami; all three are in camp or preseason.&lt;/li&gt;
+&lt;li&gt;To-dos unavailable &amp;#8212; Apple Reminders not yet connected.&lt;/li&gt;
+&lt;li&gt;Portfolio unavailable &amp;#8212; no holdings entered yet.&lt;/li&gt;
+&lt;li&gt;WHOOP recovery unavailable &amp;#8212; bridge not yet connected.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
-&lt;h2&gt;Setup Note&lt;/h2&gt;
-&lt;p&gt;This is the first edition. DigestConfig.md is in place, but several sections are still placeholder entries: calendars, newsletter feeds, news topics, sports teams, portfolio holdings, and the reminders list. The iCloud, market data, and WHOOP credentials also aren&#x27;t set yet. Fill those in and the matching sections will start appearing here each morning.&lt;/p&gt;
-&lt;hr&gt;
+
 &lt;h2&gt;Calendar&lt;/h2&gt;
-&lt;p&gt;No events scheduled today on the Personal calendar. Calendar IDs haven&#x27;t been filled in yet in DigestConfig.md, so only the primary personal calendar was checked.&lt;/p&gt;
+&lt;p&gt;Nothing scheduled today.&lt;/p&gt;
+&lt;p&gt;Coming up: Sun Aug 2, 11:00 PM &amp;#8212; Spider-Man: Brand New Day (AMC North Point Mall 12, Alpharetta)&lt;/p&gt;
 &lt;hr&gt;
+
 &lt;h2&gt;To-dos&lt;/h2&gt;
 &lt;p&gt;To-dos unavailable this morning.&lt;/p&gt;
 &lt;hr&gt;
+
 &lt;h2&gt;Newsletters&lt;/h2&gt;
-&lt;p&gt;No newsletter feeds are configured yet.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;The Verge&lt;/strong&gt; &amp;#8212; A bootleg copy of Spider-Man: Brand New Day circulated on X for more than seven hours before being taken down, reaching roughly 5.9 million accounts and drawing over 143,000 likes. Disney appears to be moving quickly on takedowns of the reposts that followed. The leak seems unlikely to dent the film commercially: it pulled in $72 million in previews, beating the $60 million preview record Avengers: Endgame set in 2019.&lt;/p&gt;
+&lt;p&gt;No other newsletters have published since the last run.&lt;/p&gt;
 &lt;hr&gt;
+
 &lt;h2&gt;News&lt;/h2&gt;
-&lt;p&gt;No news topics are configured yet.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Stocks rebound after the Fed holds rates.&lt;/strong&gt; All three major indexes closed sharply higher Friday, recovering from the prior session&#x27;s selloff, with the Dow up 1.2% (613.92 points) to 52,208.06 and the S&amp;amp;P 500 up 1.7% to 7,437.63. Semiconductors bounced back after strong Microsoft earnings eased worries about AI-driven valuations. &lt;em&gt;The Globe and Mail&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Amazon and Apple split sharply on earnings.&lt;/strong&gt; Amazon rose 15.3% on strong profits and AI momentum, while Apple fell 7.4% on soft revenue guidance. &lt;em&gt;TheStreet&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Venture funding hits a record, concentrated in a few AI names.&lt;/strong&gt; Global venture funding reached $510 billion in the first half of 2026, with more than 70% of second-quarter startup capital going to AI companies. OpenAI and Anthropic alone accounted for 43% of first-half funding. &lt;em&gt;Tech Startups&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Shipping risk rises around the Suez Canal.&lt;/strong&gt; A drone strike at an Egyptian port near the canal has widened the conflict and introduced new risks to shipping, amid a sustained but below-war-level confrontation between the US and Iran that is elevating threats to energy flows. &lt;em&gt;The Cipher Brief&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Russia strikes Ukraine with a North Korean missile.&lt;/strong&gt; Moscow appears to have used a North Korean missile against Ukrainian territory &amp;#8212; the first time in nearly a year it has relied on Pyongyang&#x27;s missiles for such a strike. &lt;em&gt;FDD Overnight Brief&lt;/em&gt;&lt;/p&gt;
 &lt;hr&gt;
+
 &lt;h2&gt;Sports&lt;/h2&gt;
-&lt;p&gt;No teams are configured yet.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;No games in the window.&lt;/strong&gt; Barcelona, the Vikings, and Miami all had no completed fixtures since the last digest.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;F.C. Barcelona&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;Barca Blaugranes&lt;/em&gt; &amp;#8212; Bar&amp;#231;a announced the signing of Jesse Bisiwu, a winger arriving from Belgium on a deal through 2031.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Barca Blaugranes&lt;/em&gt; &amp;#8212; Former Borussia Dortmund forward Karim Adeyemi has also joined, with reports crediting a direct call from Hansi Flick in closing the move.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Sportskeeda&lt;/em&gt; &amp;#8212; The Spanish federation has opened a disciplinary investigation into Barcelona following an Atl&amp;#233;tico Madrid complaint over an approach to Juli&amp;#225;n &amp;#193;lvarez outside permitted transfer-window rules.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Minnesota Vikings&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;Star Tribune&lt;/em&gt; &amp;#8212; Justin Jefferson said the quarterback competition between Kyler Murray and J.J. McCarthy should bring out the best in both; Kevin O&#x27;Connell plans to rotate them between the first and second teams early in camp.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Vikings.com&lt;/em&gt; &amp;#8212; Rookie defensive lineman Caleb Banks, the No. 18 pick, moved to almost exclusive first-team work Friday after opening camp with the twos.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Star Tribune&lt;/em&gt; &amp;#8212; Left tackle Christian Darrisaw took his first veteran rest day, part of a plan to manage the knee that limited him to 10 games last season.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Miami Hurricanes&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;State of The U&lt;/em&gt; &amp;#8212; Miami was voted the overwhelming preseason ACC favorite, taking 165 of 185 first-place votes, and quarterback Darian Mensah was named ACC Preseason Player of the Year.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Sports Illustrated&lt;/em&gt; &amp;#8212; Offensive tackle Francis Mauigoa made the preseason AP All-America second team.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;University of Miami Athletics&lt;/em&gt; &amp;#8212; The season opens on the road at Stanford on Friday, September 4, at 9:00 PM Eastern on ESPN.&lt;/li&gt;
+&lt;/ul&gt;
 &lt;hr&gt;
+
 &lt;h2&gt;Portfolio&lt;/h2&gt;
-&lt;p&gt;No holdings are configured yet.&lt;/p&gt;
+&lt;p&gt;Portfolio unavailable this morning &amp;#8212; no holdings are configured yet.&lt;/p&gt;
 &lt;hr&gt;</content>
   </entry>
 </feed>
