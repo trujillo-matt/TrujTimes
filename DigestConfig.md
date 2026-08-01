@@ -78,6 +78,13 @@ The random path segment keeps the feed off predictable URLs like `/TrujTimes/fee
 
 Keep the file at this path — moving it breaks the KOReader subscription, which fetches this URL directly with no authentication.
 
+### Building the feeds
+Do not hand-write the feeds. Each run, write the digest to `<YYYY-MM-DD>.html` in the feed directory (including a `<meta name="published" content="...Z">` tag), then run `python3 build_feeds.py` from the repo root. It regenerates both feeds from the dated pages and prunes anything past the retention window, pages included.
+
+Two feeds are published from the same content:
+- `rss.xml` — RSS 2.0, **the one KOReader subscribes to**. Body in a CDATA `<description>`.
+- `feed.xml` — Atom, kept for any other reader.
+
 ### Feed requirements (KOReader will reject the feed otherwise)
 KOReader's NewsDownloader only accepts an Atom feed when `feed.title` exists and the first entry has **both** `<title>` and `<link>`. A missing entry `<link>` makes it reject the feed with the misleading message "Couldn't process RSS". So, every run:
 

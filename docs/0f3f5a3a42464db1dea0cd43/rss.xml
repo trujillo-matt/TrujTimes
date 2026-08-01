@@ -1,13 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="published" content="2026-08-01T16:27:00Z">
-<title>Morning Digest, August 1, 2026</title>
-</head>
-<body>
-<h1>Trujillo Times</h1>
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Trujillo Times Morning Digest</title>
+    <link>https://trujillo-matt.github.io/TrujTimes/0f3f5a3a42464db1dea0cd43/</link>
+    <description>Daily morning digest for the Kindle.</description>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 01 Aug 2026 16:27:00 +0000</lastBuildDate>
+    <item>
+      <title>Morning Digest, August 1, 2026</title>
+      <link>https://trujillo-matt.github.io/TrujTimes/0f3f5a3a42464db1dea0cd43/2026-08-01.html</link>
+      <guid isPermaLink="false">trujtimes-digest-2026-08-01</guid>
+      <pubDate>Sat, 01 Aug 2026 16:27:00 +0000</pubDate>
+      <description><![CDATA[<h1>Trujillo Times</h1>
 <p>Saturday, August 1, 2026 &#8212; Showers and thunderstorms, high 85&#176;F, low 72&#176;F</p>
 <hr>
 <h2>At a Glance</h2>
@@ -40,6 +44,7 @@
 <hr>
 <h2>Portfolio</h2>
 <p>No holdings are configured yet.</p>
-<hr>
-</body>
-</html>
+<hr>]]></description>
+    </item>
+  </channel>
+</rss>
