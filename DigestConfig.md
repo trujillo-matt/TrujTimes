@@ -88,9 +88,19 @@ Site feeds:
 - Golf equipment
 - Pokémon investing (TCG card market)
 
-Story counts are per edition, not per topic — see the Editions table. Daily runs 3 to 5 stories at 1 to 2 sentences; the Saturday wrap runs 5 to 7 at 4 to 6 sentences, covering the week's developments rather than the last day's. Topics rotate in and out; a quiet topic simply doesn't appear. Use popular, well-known outlets and name the source on every story.
+Story counts are per edition, not per topic — see the Editions table. Daily runs 3 to 5 stories at 1 to 2 sentences; the Saturday wrap runs 5 to 7 at 4 to 6 sentences, covering the week's developments rather than the last day's. Use popular, well-known outlets and name the source on every story.
 
 The longer weekend treatment means more context and why-it-matters, still in your own words. It is not licence to quote at length.
+
+### Grouping by topic
+News is organised by topic, the same way Sports is organised by team.
+
+- **Every topic gets a subheading every edition**, in the fixed order listed above. Golf always sits in the same place, so the section is scannable without reading it.
+- **A quiet topic says so**: `Nothing notable this week.` (or `today` on a daily). Don't drop it silently — same reasoning as Sports reporting "no game in window". A reader must be able to tell "nothing happened" from "not checked".
+- **Subheadings use `<p><strong>Topic</strong></p>`**, matching how Sports labels teams. Not `<h3>` — the layout rule permits only `<h1>`, `<h2>`, `<hr>`, `<p>`, and `<ul>`/`<li>`.
+- **Format follows the edition.** Daily stories go in a `<ul>` as `<li><em>Source</em> — one to two sentences.</li>`, matching Sports. Weekend stories stay as prose paragraphs, since 4 to 6 sentences reads badly inside a list item.
+
+Because counts stay per edition, most topics will be quiet on any given day. That's expected: a story earns its place by mattering, not by filling a heading.
 
 ## Sports Teams/Leagues
 - F.C. Barcelona — LaLiga, Copa del Rey, Champions League
