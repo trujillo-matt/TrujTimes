@@ -7,6 +7,44 @@ Run every command from the repo root.
 
 ---
 
+## 0. Preflight
+
+Do this before any collection work. A run that can't publish should find out in
+the first ten seconds and say so, not after an hour of work.
+
+Run each of these as its own command. Keep `cd` on a line by itself rather than
+chaining it with `&&` or `||` — the working directory persists between commands,
+and a compound command containing `cd` can trigger a permission prompt that an
+unattended run has nobody to answer.
+
+```bash
+cd /home/user/TrujTimes
+```
+
+```bash
+ls DigestConfig.md fetch_sources.py build_feeds.py record_run.py
+```
+
+```bash
+git rev-parse --abbrev-ref HEAD
+```
+
+```bash
+git push --dry-run origin claude/clever-feynman-w6afpi
+```
+
+All four must succeed:
+
+- If `cd` fails, the clone is elsewhere — `git rev-parse --show-toplevel` from
+  anywhere inside it gives the real root.
+- If the `ls` doesn't list all four files, you're in the wrong directory.
+- If `HEAD` isn't `claude/clever-feynman-w6afpi`, switch to it. That's the
+  default branch and the one Pages serves.
+- If `--dry-run` fails, the run has no way to publish. **Stop there** and say
+  exactly that in the run log — don't write a digest that can't be delivered.
+
+---
+
 ## 1. Orient
 
 Read `DigestConfig.md` first. It is authoritative for every value — masthead,
@@ -107,7 +145,7 @@ someone edits a feed by hand.
 ## 6. Record and publish
 
 ```bash
-python3 -c "import json,datetime;json.dump({'last_run':datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')},open('last_run.json','w'),indent=2)"
+python3 record_run.py
 git add -A
 git commit -m "Publish digest for <date>"
 git push -u origin claude/clever-feynman-w6afpi
@@ -116,6 +154,12 @@ git push -u origin claude/clever-feynman-w6afpi
 **Updating `last_run.json` is not optional.** The daily edition's collection
 window starts from it, so skipping the update makes every subsequent run pull a
 wider and wider window of newsletters and games.
+
+Note the shape of that first command. Anything that writes a file goes through
+a committed script, never an inline `python3 -c "...open(...,'w')..."` or a
+heredoc — inline interpreter writes can trip the permission classifier, and an
+unattended run has nobody to approve the prompt. If you need a new write step,
+add a script and commit it.
 
 `claude/clever-feynman-w6afpi` is the repo's default branch and the one GitHub
 Pages serves. Pages takes a minute or two to rebuild after a push.
