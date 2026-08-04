@@ -2,6 +2,8 @@
 
 Edit this file to change what the digest pulls. Commit changes to the repo; the routine reads this file fresh on every run.
 
+For the run procedure itself — which commands to run, in what order, and how to publish — see `RUNBOOK.md`. This file holds *what* the digest pulls; the runbook holds *how* a run executes.
+
 Do not put API keys, passwords, or tokens in this file. Those belong in the Routine's secrets/environment settings, never in the repo.
 
 This repo is public, so GitHub Pages can serve the feed on a Free plan. Treat everything here and everything the digest publishes as world-readable: the generated feed contains calendar events and portfolio values, and anyone with the URL can read it.
@@ -163,6 +165,9 @@ Keep the file at this path — moving it breaks the KOReader subscription, which
 Do not hand-write the feeds. Each run, write the digest to `<YYYY-MM-DD>.html` in the feed directory (including a `<meta name="published" content="...Z">` tag), then run `python3 build_feeds.py` from the repo root. It regenerates both feeds from the dated pages and prunes anything past the retention window, pages included.
 
 Each entry's title comes from the page's `<title>` tag, so a Weekend Digest needs no build change — just title the page `Weekend Digest, <date>`.
+
+### After publishing
+Update `last_run.json` to the run's UTC timestamp, then commit and push to `claude/clever-feynman-w6afpi` — the default branch, which Pages serves. Updating `last_run.json` is required, not housekeeping: the daily edition's collection window starts from it, so skipping it makes each later run pull an ever-wider window of newsletters and games. See `RUNBOOK.md` step 6.
 
 Two feeds are published from the same content:
 - `rss.xml` — RSS 2.0, **the one KOReader subscribes to**. Body in a CDATA `<description>`.
