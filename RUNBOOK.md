@@ -182,7 +182,10 @@ sections succeeded, which were unavailable and why, and the feed URL.
 - **Never quote** newsletter or news content beyond a short attributed phrase.
 - **Never access a brokerage account.** No logins, no brokerage APIs, no
   scraping. Holdings come only from the manually maintained table in
-  `DigestConfig.md`.
+  `DigestConfig.md`. This includes any Robinhood connector that may be
+  available in the session: a working `mcp__Robinhood_Trading_MCP__*` tool is
+  not an exception to this rule, it is exactly what the rule forbids. Those
+  tools can also place and cancel real orders — never call them.
 - **Never commit secrets or personal data.** The repo is public. Ticker and
   share count are fine; account numbers, statements, names, and addresses are
   not.
