@@ -35,13 +35,40 @@ git push --dry-run origin claude/clever-feynman-w6afpi
 
 All four must succeed:
 
-- If `cd` fails, the clone is elsewhere — `git rev-parse --show-toplevel` from
-  anywhere inside it gives the real root.
+- If `cd` fails, there may be no clone at all in this session. The repo is
+  public, so `git clone https://github.com/trujillo-matt/TrujTimes.git` works —
+  but read the push note below before assuming the run can publish.
 - If the `ls` doesn't list all four files, you're in the wrong directory.
 - If `HEAD` isn't `claude/clever-feynman-w6afpi`, switch to it. That's the
   default branch and the one Pages serves.
-- If `--dry-run` fails, the run has no way to publish. **Stop there** and say
-  exactly that in the run log — don't write a digest that can't be delivered.
+- If `--dry-run` fails, see the push-access note below. If neither path works,
+  the run has no way to publish. **Stop there** and say exactly that in the run
+  log — don't write a digest that can't be delivered.
+
+### Push access in a scheduled session
+
+This is the known failure mode. Sessions spawned by the Routine start with an
+empty authorized repository set, so the ambient git credential does not cover
+this repo: cloning works, pushing returns *"not in session's authorized set."*
+A week of scheduled runs failed here silently before it was diagnosed.
+
+Two ways it gets fixed, in order of preference:
+
+1. **The repo is authorized for the environment.** Then the plain
+   `git push -u origin claude/clever-feynman-w6afpi` in step 6 just works and
+   there is nothing to do.
+2. **A `GH_TOKEN` environment variable is set** on the Routine's environment,
+   holding a GitHub token with `contents: write` on `trujillo-matt/TrujTimes`.
+   If `git push --dry-run` fails and `GH_TOKEN` is present, publish with:
+
+   ```bash
+   git push "https://x-access-token:${GH_TOKEN}@github.com/trujillo-matt/TrujTimes.git" HEAD:claude/clever-feynman-w6afpi
+   ```
+
+   Never echo `$GH_TOKEN`, never write it into a file, and never paste push
+   output containing it into the run log. Reference the variable; don't expand
+   it. If the token is missing or rejected, stop and report that — do not try
+   to work around it another way.
 
 ---
 
