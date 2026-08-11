@@ -52,7 +52,8 @@ empty authorized repository set, so the ambient git credential does not cover
 this repo: cloning works, pushing returns *"not in session's authorized set."*
 A week of scheduled runs failed here silently before it was diagnosed.
 
-Two ways it gets fixed, in order of preference:
+See `SETUP.md` for the step-by-step fix. In short, two ways, in order of
+preference:
 
 1. **The repo is authorized for the environment.** Then the plain
    `git push -u origin claude/clever-feynman-w6afpi` in step 6 just works and

@@ -21,6 +21,7 @@ import re
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
 from datetime import date, datetime, timedelta, timezone
@@ -39,8 +40,10 @@ ESPN = "https://site.api.espn.com/apis/site/v2/sports"
 TEAMS = [
     {"name": "F.C. Barcelona", "sport": "soccer", "leagues":
         ["esp.1", "esp.copa_del_rey", "uefa.champions"], "id": "83", "seasoned": True},
+    # ESPN's schedule endpoint returns regular season by default; preseason
+    # games only appear under seasontype=1, so query both and merge.
     {"name": "Minnesota Vikings", "sport": "football", "leagues": ["nfl"],
-     "id": "min", "seasoned": False},
+     "id": "min", "seasoned": False, "season_types": [1, 2]},
     {"name": "Miami Hurricanes", "sport": "football", "leagues": ["college-football"],
      "id": "2390", "seasoned": True},
 ]
@@ -70,12 +73,20 @@ WINDOWS_TZ = {
 # fetching
 
 
+# ESPN returns 403 for our identifying User-Agent (and for Mozilla-style ones),
+# but serves the library default fine. NWS's API terms ask for a contact string,
+# so the identifying UA stays everywhere else.
+NO_UA_HOSTS = ("site.api.espn.com",)
+
+
 def fetch(url, retries=1):
     """GET a URL as bytes. One retry for anything transient."""
+    host = urllib.parse.urlsplit(url).hostname or ""
+    headers = {} if host in NO_UA_HOSTS else {"User-Agent": UA}
     last = None
     for attempt in range(retries + 1):
         try:
-            req = urllib.request.Request(url, headers={"User-Agent": UA})
+            req = urllib.request.Request(url, headers=headers)
             with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
                 return r.read()
         except Exception as exc:  # noqa: BLE001 - any failure is just "unavailable"
@@ -436,6 +447,24 @@ def get_newsletters(feeds, since, edition="daily", fresh_since=None):
 # sports
 
 
+def parse_espn_date(raw):
+    """ESPN mixes formats: '2026-08-15T17:00Z' and '...T17:00:00Z'.
+
+    Both must parse. Getting this wrong silently drops events, which reads as
+    'no game in window' rather than as an error.
+    """
+    raw = (raw or "").strip()
+    if not raw:
+        return None
+    if raw.endswith("Z"):
+        raw = raw[:-1] + "+00:00"
+    try:
+        dt = datetime.fromisoformat(raw)
+    except ValueError:
+        return None
+    return dt if dt.tzinfo else dt.replace(tzinfo=timezone.utc)
+
+
 def game_record(event, team_name):
     comp = (event.get("competitions") or [{}])[0]
     status = (comp.get("status") or event.get("status") or {}).get("type", {})
@@ -458,10 +487,23 @@ def get_sports(since, edition="daily"):
     out, failures = [], []
     for team in TEAMS:
         games, upcoming, any_ok = [], [], False
+        # A team may need more than one call per league: NFL preseason lives
+        # under seasontype=1 and is absent from the default response.
+        calls = []
         for league in team["leagues"]:
-            url = f'{ESPN}/{team["sport"]}/{league}/teams/{team["id"]}/schedule'
-            if team["seasoned"]:
-                url += f"?season={season}"
+            for stype in team.get("season_types", [None]):
+                params = []
+                if team["seasoned"]:
+                    params.append(f"season={season}")
+                if stype is not None:
+                    params.append(f"seasontype={stype}")
+                url = f'{ESPN}/{team["sport"]}/{league}/teams/{team["id"]}/schedule'
+                if params:
+                    url += "?" + "&".join(params)
+                calls.append((league, url))
+
+        seen_events = set()
+        for league, url in calls:
             try:
                 data = json.loads(fetch(url))
                 any_ok = True
@@ -470,11 +512,11 @@ def get_sports(since, edition="daily"):
                                  "reason": short_reason(exc)})
                 continue
             for ev in data.get("events", []):
-                raw = (ev.get("date") or "")[:19]
-                try:
-                    when = datetime.strptime(raw, "%Y-%m-%dT%H:%M").replace(tzinfo=timezone.utc) \
-                        if len(raw) == 16 else datetime.strptime(raw, "%Y-%m-%dT%H:%M:%S").replace(tzinfo=timezone.utc)
-                except ValueError:
+                if ev.get("id") in seen_events:
+                    continue
+                seen_events.add(ev.get("id"))
+                when = parse_espn_date(ev.get("date"))
+                if when is None:
                     continue
                 if since <= when <= now:
                     rec = game_record(ev, team["name"])
