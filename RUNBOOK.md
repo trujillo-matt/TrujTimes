@@ -121,6 +121,18 @@ These need summarizing and selection, so they aren't scripted:
   provides for real scoring plays and leaders to build the 2–4 notable-moment
   bullets. Also search for team news (injuries, trades, roster moves,
   previews), presented like News stories with a named source.
+- **Portfolio** — if the `Robinhood Trading MCP` connector is available and
+  enabled, call it for current positions and current value (see the
+  read-only allowlist under Hard rules) and use that in place of
+  `fetch_sources.py`'s portfolio block for this run. If the connector isn't
+  available, isn't enabled in this session, times out, or returns anything
+  incomplete or that doesn't look right, don't retry or guess at the
+  missing piece — fall back to `fetch_sources.py`'s output (the manually
+  maintained table in `DigestConfig.md` priced via Yahoo) for the whole
+  section, same as before this connector existed. Never mix a live figure
+  from one source with a stale one from the other in the same run. Either
+  way, never write anything back to `DigestConfig.md`'s table — that file
+  stays a human-edited fallback, not a cache for live data.
 
 Name a source on every news and sports story.
 
@@ -205,12 +217,20 @@ sections succeeded, which were unavailable and why, and the feed URL.
 - **Never fabricate.** Not a data point, headline, score, highlight, or summary.
   An unavailable source is reported as unavailable, never filled in.
 - **Never quote** newsletter or news content beyond a short attributed phrase.
-- **Never access a brokerage account.** No logins, no brokerage APIs, no
-  scraping. Holdings come only from the manually maintained table in
-  `DigestConfig.md`. This includes any Robinhood connector that may be
-  available in the session: a working `mcp__Robinhood_Trading_MCP__*` tool is
-  not an exception to this rule, it is exactly what the rule forbids. Those
-  tools can also place and cancel real orders — never call them.
+- **Robinhood, if connected, is read-only and for exactly two things:**
+  current positions (ticker + share count) and current position/account
+  value. Nothing else. This is an allowlist, not a blocklist: if a call isn't
+  fetching one of those two things, don't make it, regardless of how safe the
+  tool's name or description makes it sound. In particular, never call
+  anything that places, cancels, or modifies an order, moves money
+  (transfer/deposit/withdrawal), or changes account settings or watchlists —
+  those tools can live on the same connector. See "Portfolio" in step 3 for
+  how the pulled data is used and when it falls back.
+- **No other brokerage access.** No logins, no other brokerage APIs, no
+  scraping, outside the one allowlisted Robinhood read.
+- **Never store brokerage account numbers, statements, or personal details in
+  this repo.** Ticker, share count, and value are fine to publish; nothing
+  else from the account is.
 - **Never commit secrets or personal data.** The repo is public. Ticker and
   share count are fine; account numbers, statements, names, and addresses are
   not.

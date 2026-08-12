@@ -124,9 +124,9 @@ Scores and schedules come from ESPN's public API (no key required). Verified tea
 For a completed game, `.../summary?event=<id>` supplies scoring plays and leaders — use it for the 2 to 4 notable-moment bullets rather than inventing them. Team news (injuries, trades, roster moves, previews) comes from web search, same treatment as the News section.
 
 ## Portfolio Holdings
-Manual entry only. This drives price lookups, not brokerage access. Never log into a brokerage, and never store account numbers, statements, or personal details in this repo — share counts are all that belongs here.
+Primary source is a live, read-only pull from the `Robinhood Trading MCP` connector (positions and value only — see the allowlist in `RUNBOOK.md`'s Hard rules). The table below is the fallback, used when that connector is unavailable, disabled, or returns something incomplete; it also drives the Yahoo price lookup used to value the fallback. Never log into a brokerage outside that one allowlisted read, and never store account numbers, statements, or personal details in this repo — ticker, share count, and value are all that belong here.
 
-Share counts below were transcribed from Robinhood statements for the period ending **2026-06-30**, aggregated across four accounts (one Roth IRA, three individual). They are a point-in-time snapshot: any buy, sell, or dividend reinvestment after that date is not reflected until the table is updated.
+Share counts below were transcribed from Robinhood statements for the period ending **2026-06-30**, aggregated across four accounts (one Roth IRA, three individual). They are a point-in-time snapshot: any buy, sell, or dividend reinvestment after that date is not reflected until the table is updated by hand — the live pull does not write back to this file.
 
 | Ticker | Shares |
 |---|---|
