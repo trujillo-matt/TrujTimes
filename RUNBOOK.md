@@ -47,29 +47,26 @@ All four must succeed:
 
 ### Push access in a scheduled session
 
-This is the known failure mode. Sessions spawned by the Routine start with an
-empty authorized repository set, so the ambient git credential does not cover
-this repo: cloning works, pushing returns *"not in session's authorized set."*
-A week of scheduled runs failed here silently before it was diagnosed.
+This is the known failure mode. A Routine carries a list of repositories that
+get cloned at the start of each run. If that list is empty, the session starts
+with no checkout and no scoped git credential: `no repo checkout found`, and any
+push returns *"not in session's authorized set."* A week of scheduled runs
+failed here silently before it was diagnosed.
 
-See `SETUP.md` for the step-by-step fix. In short, two ways, in order of
-preference:
+The fix is to attach `trujillo-matt/TrujTimes` to the Routine — see `SETUP.md`.
+Once attached, the plain `git push -u origin claude/clever-feynman-w6afpi` in
+step 6 works, because pushes to `claude/`-prefixed branches are always accepted.
 
-1. **The repo is authorized for the environment.** Then the plain
-   `git push -u origin claude/clever-feynman-w6afpi` in step 6 just works and
-   there is nothing to do.
-2. **A `GH_TOKEN` environment variable is set** on the Routine's environment,
-   holding a GitHub token with `contents: write` on `trujillo-matt/TrujTimes`.
-   If `git push --dry-run` fails and `GH_TOKEN` is present, publish with:
+If the preflight push check fails, **stop and report it**. Do not reach for a
+token or any other credential to work around it: cloud environments have no
+secrets store, and the missing piece is the repository attachment, not
+reachability.
 
-   ```bash
-   git push "https://x-access-token:${GH_TOKEN}@github.com/trujillo-matt/TrujTimes.git" HEAD:claude/clever-feynman-w6afpi
-   ```
-
-   Never echo `$GH_TOKEN`, never write it into a file, and never paste push
-   output containing it into the run log. Reference the variable; don't expand
-   it. If the token is missing or rejected, stop and report that — do not try
-   to work around it another way.
+A second thing can block a run even with the repo attached: the environment's
+network access level. On **Trusted**, only a default allowlist is reachable and
+the digest's sources are not on it — fetches fail with `403` and
+`x-deny-reason: host_not_allowed`. That surfaces as several sources reporting
+"unavailable" at once. `SETUP.md` lists the domains to allow.
 
 ---
 

@@ -1,95 +1,95 @@
-# SETUP — granting the scheduled run push access
+# SETUP — attaching the repository to the Routine
 
 The digest publishes by pushing to `claude/clever-feynman-w6afpi`, which GitHub
-Pages serves. Everything else in the pipeline runs unattended; **this is the one
-step that needs a human**, because it's an account settings change.
+Pages serves. Everything else runs unattended; **this is the one step that needs
+a human**, because a Routine's repository list can only be set in the web UI.
 
 ## The problem this solves
 
-Sessions spawned by the Routine start with an empty authorized repository set.
-They can clone the repo (it's public) but cannot push to it — the ambient git
-credential doesn't cover `trujillo-matt/TrujTimes`. The push fails with
-*"not in session's authorized set."*
+A Routine is a saved configuration of a prompt, **one or more repositories**,
+and a set of connectors. Each repository is cloned at the start of every run.
 
-This was diagnosed the hard way: roughly ten scheduled runs published nothing,
-silently, over a week. Notifications are now enabled on the Routine, so a
-failure reports itself rather than vanishing — but publishing stays blocked
-until one of the options below is done.
+The Routine here was originally created through the `create_trigger` MCP tool,
+which has no repositories field. So every firing spawned a session with nothing
+cloned and no scoped git credential, and died immediately:
 
-Environment: **Default** — `env_016rCNuT4ogFkAwvJWc2zc9P` (`anthropic_cloud`).
+- `no repo checkout found`
+- `not in session's authorized set`
 
-Both options go through the same environment settings page. Option A is simpler
-wherever it's available.
+Roughly ten scheduled runs published nothing, silently, over a week before this
+was diagnosed. Notifications are now on, so a failure reports itself — but
+publishing stays blocked until the repository is attached.
 
----
-
-## Option A — authorize the repo for the environment (preferred)
-
-Nothing expires, no secret to store or rotate.
-
-1. Open <https://claude.ai/code> and go to environment settings for the
-   **Default** environment.
-2. Find the GitHub / repositories section for that environment.
-3. Add **`trujillo-matt/TrujTimes`** to its repository set, with write access.
-4. If the repo doesn't appear in the picker, the Claude GitHub App probably
-   can't see it. On GitHub: **Settings → Applications → Claude → Configure**,
-   then grant access to `TrujTimes` — either "All repositories" or add this one
-   to the selected list — and retry step 3.
-
-Docs: <https://code.claude.com/docs/en/claude-code-on-the-web>
-
-No code changes follow. `RUNBOOK.md` step 6 already does a plain `git push`,
-which starts working the moment the repo is authorized.
+Note for anyone tempted by a token workaround: don't. Cloud environments have
+no secrets store, the docs explicitly advise against putting credentials in
+environment variables, and a token wouldn't fix this anyway — the session needs
+the repo *attached*, not just reachable. Pushes to `claude/`-prefixed branches
+are always accepted once it is.
 
 ---
 
-## Option B — `GH_TOKEN` environment variable (fallback)
+## Fix: attach the repository
 
-Use only if Option A isn't available. `RUNBOOK.md` already documents the
-fallback push, so nothing needs editing here either.
+1. Go to <https://claude.ai/code/routines>
+2. Click **Trujillo Times morning digest**
+3. Click the **pencil icon** to open **Edit routine**
+4. Under **Select repositories**, add **`trujillo-matt/TrujTimes`**
+5. **Save**
 
-### B1. Create a fine-grained token
+---
 
-Works fine in a mobile browser.
+## Also check: network access
 
-1. GitHub → avatar → **Settings**
-2. **Developer settings** (bottom of the left nav)
-3. **Personal access tokens → Fine-grained tokens**
-4. **Generate new token**
-5. Name: `trujtimes-digest`
-6. Resource owner: **trujillo-matt**
-7. Expiration: 90 days is reasonable — but note it *will* expire, and the
-   digest stops publishing that morning
-8. Repository access: **Only select repositories → TrujTimes**
-9. Permissions → Repository permissions → **Contents: Read and write**
-   (sufficient on its own; grant nothing else)
-10. **Generate token** and copy it — GitHub shows it exactly once
+The **Default** environment uses **Trusted** network access, which allows only a
+default allowlist of package registries, cloud provider APIs, container
+registries, and common development domains. The digest's sources are none of
+those. Requests to hosts outside the list fail with `403` and
+`x-deny-reason: host_not_allowed`.
 
-### B2. Add it to the environment
+In **Edit routine**, select the cloud icon showing **Default**, hover the
+environment, click the **settings icon**, and in **Update cloud environment**
+set **Network access** to **Custom**. Tick **Also include default list of
+common package managers**, then add:
 
-1. <https://claude.ai/code> → environment settings for **Default**
-2. Add an environment variable named exactly **`GH_TOKEN`**, value = the token
-3. Save
+```
+api.weather.gov
+p116-caldav.icloud.com
+outlook.office365.com
+kill-the-newsletter.com
+artofmanliness.com
+www.palladiummag.com
+theverge.com
+www.bytedrum.com
+blessthisstuff.com
+coolmaterial.com
+feeds.feedburner.com
+site.api.espn.com
+query1.finance.yahoo.com
+```
 
-### Handling
+Choose **Full** instead if you'd rather not maintain the list. Web search needs
+no entries — that traffic routes through Anthropic's servers, not the session's
+network.
 
-Scope it to this one repo, keep `Contents: write` as its only permission, and
-treat it as disposable. It lives in an environment that spawns unattended
-sessions every morning, against a public repo. If it ever surfaces in a log,
-revoke it rather than reusing it.
+Keep this list in step with the feeds in `DigestConfig.md`: adding a newsletter
+on a new host means adding its domain here too, or that one feed quietly starts
+reporting as unavailable.
 
 ---
 
 ## Verifying
 
-The next scheduled run is 5:30 AM ET, Monday–Saturday. To test sooner, fire the
-Routine manually and watch for a commit on `claude/clever-feynman-w6afpi`
-within a few minutes.
+Open the routine and click **Run now** rather than waiting for 5:30 AM.
 
-Success: a new dated page under `docs/0f3f5a3a42464db1dea0cd43/`, both feeds
-rebuilt, and the deployed `rss.xml` still passing the KOReader gate.
+Success: a commit on `claude/clever-feynman-w6afpi` within a few minutes, a new
+dated page under `docs/0f3f5a3a42464db1dea0cd43/`, both feeds rebuilt, and the
+deployed `rss.xml` still passing the KOReader gate.
 
-Failure now reports itself — the Routine sends a completion notification by
-push and email, and `RUNBOOK.md`'s step 0 preflight stops a run in the first
-few seconds if it has no way to publish, rather than writing a whole digest
-that can't be delivered.
+**A green status in the run list is not proof of success.** It means the session
+started and exited without an infrastructure error, not that the digest
+published. Confirm by checking for the new dated entry in the feed.
+
+To see what a run actually did, open <https://claude.ai/code/routines>, click
+the routine, then click any run to open it as a full session and read the
+transcript. Watch for `403` / `host_not_allowed`, which is the signature of the
+network allowlist above.
