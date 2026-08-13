@@ -30,7 +30,7 @@ git rev-parse --abbrev-ref HEAD
 ```
 
 ```bash
-git push --dry-run origin claude/clever-feynman-w6afpi
+git push --dry-run origin <your-designated-branch>
 ```
 
 All four must succeed:
@@ -39,8 +39,15 @@ All four must succeed:
   public, so `git clone https://github.com/trujillo-matt/TrujTimes.git` works —
   but read the push note below before assuming the run can publish.
 - If the `ls` doesn't list all four files, you're in the wrong directory.
-- If `HEAD` isn't `claude/clever-feynman-w6afpi`, switch to it. That's the
-  default branch and the one Pages serves.
+- Push to whatever branch your own session instructions designate, not a name
+  hardcoded here. Each run's session assigns a fresh branch (typically
+  `claude/<two-word-slug>`), and it gets merged and deleted between runs — a
+  branch name pinned in this file goes stale within days. If `HEAD` isn't that
+  branch, switch to it. Confirm what GitHub Pages actually serves by checking
+  whether the live feed (URL at the bottom of section 6) already reflects your
+  branch's latest content before assuming a different branch name from an
+  older revision of this doc is authoritative — Pages tracks its own source
+  branch, which will not always match the repo's `default_branch` API field.
 - If `--dry-run` fails, see the push-access note below. If neither path works,
   the run has no way to publish. **Stop there** and say exactly that in the run
   log — don't write a digest that can't be delivered.
@@ -54,7 +61,7 @@ push returns *"not in session's authorized set."* A week of scheduled runs
 failed here silently before it was diagnosed.
 
 The fix is to attach `trujillo-matt/TrujTimes` to the Routine — see `SETUP.md`.
-Once attached, the plain `git push -u origin claude/clever-feynman-w6afpi` in
+Once attached, the plain `git push -u origin <your-designated-branch>` in
 step 6 works, because pushes to `claude/`-prefixed branches are always accepted.
 
 If the preflight push check fails, **stop and report it**. Do not reach for a
@@ -173,7 +180,7 @@ someone edits a feed by hand.
 python3 record_run.py
 git add -A
 git commit -m "Publish digest for <date>"
-git push -u origin claude/clever-feynman-w6afpi
+git push -u origin <your-designated-branch>
 ```
 
 **Updating `last_run.json` is not optional.** The daily edition's collection
@@ -186,8 +193,10 @@ heredoc — inline interpreter writes can trip the permission classifier, and an
 unattended run has nobody to approve the prompt. If you need a new write step,
 add a script and commit it.
 
-`claude/clever-feynman-w6afpi` is the repo's default branch and the one GitHub
-Pages serves. Pages takes a minute or two to rebuild after a push.
+Your designated branch gets merged into the repo's default branch and deleted
+between runs, so a new branch name shows up each cycle — don't be alarmed if
+`git push --dry-run` in step 0 reports `[new branch]`; that's expected, not a
+failure. Pages takes a minute or two to rebuild after a push.
 
 Feed URL: https://trujillo-matt.github.io/TrujTimes/0f3f5a3a42464db1dea0cd43/rss.xml
 

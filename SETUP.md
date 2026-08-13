@@ -1,8 +1,12 @@
 # SETUP — attaching the repository to the Routine
 
-The digest publishes by pushing to `claude/clever-feynman-w6afpi`, which GitHub
-Pages serves. Everything else runs unattended; **this is the one step that needs
-a human**, because a Routine's repository list can only be set in the web UI.
+The digest publishes by pushing to whatever branch the session is told to
+develop on, which then merges into the branch GitHub Pages serves. That branch
+name changes every cycle — it gets merged and deleted between runs, so don't
+hardcode one anywhere in this repo's docs; a session should always read its
+own designated branch from its own instructions. Everything else runs
+unattended; **this is the one step that needs a human**, because a Routine's
+repository list can only be set in the web UI.
 
 ## The problem this solves
 
@@ -81,9 +85,11 @@ reporting as unavailable.
 
 Open the routine and click **Run now** rather than waiting for 5:30 AM.
 
-Success: a commit on `claude/clever-feynman-w6afpi` within a few minutes, a new
-dated page under `docs/0f3f5a3a42464db1dea0cd43/`, both feeds rebuilt, and the
-deployed `rss.xml` still passing the KOReader gate.
+Success: a commit on the session's designated branch within a few minutes, a
+new dated page under `docs/0f3f5a3a42464db1dea0cd43/`, both feeds rebuilt, and
+the deployed `rss.xml` still passing the KOReader gate. Confirm what's live by
+checking the feed URL directly rather than trusting any branch name recorded
+in these docs — it goes stale within days.
 
 **A green status in the run list is not proof of success.** It means the session
 started and exited without an infrastructure error, not that the digest
