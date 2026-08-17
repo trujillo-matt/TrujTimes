@@ -423,6 +423,10 @@ def get_newsletters(feeds, since, edition="daily", fresh_since=None):
             if not link:
                 el = n.find(f"{ns}link")
                 link = el.get("href", "") if el is not None else ""
+            if not link:
+                guid = n.findtext("guid") or ""
+                if guid.startswith("http"):
+                    link = guid
             item = {"title": (n.findtext(f"{ns}title") or "").strip(),
                     "published": ts.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
                     "link": link}
